@@ -58,6 +58,10 @@ class Figure {
         }
         this.body = newBody;
     }
+
+    get width() {
+        return this.body
+    }
 }
 
 const CELL_TYPE = {
@@ -84,7 +88,11 @@ class GameArea {
         for(let i = 0; i < this.width; i++) {
             let row = [];
             for(let j = 0; j < this.heigth; j++) {
-                //if(this.figure)
+                if(this.figure &&
+                    (this.figureHeight <= i ||
+                    this.figureHeight + this.figure.body.width > i) &&
+                    (this.figureLeft <= j ||
+                    this.figureLeft + this.figureHeight > j))
                 row.push({
                     TYPE: CELL_TYPE.EMPTY
                 });
