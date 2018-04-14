@@ -31,7 +31,7 @@ const BODIES_BASE = {
 
 class Figure {
     constructor() {
-        this._shape = BODIES_BASE.ZShapeRight;
+        this._shape = BODIES_BASE.LShapeRight;
         this.body = this._shape;
     }
 
@@ -45,7 +45,6 @@ class Figure {
             newBody.push(newRow);
         }
         this.body = newBody;
-        console.log(newBody);
     }
 
     rotateToLeft() {
@@ -58,17 +57,58 @@ class Figure {
             newBody.push(newRow);
         }
         this.body = newBody;
-        console.log(newBody);
     }
 }
 
+const CELL_TYPE = {
+    EMPTY: "EMPTY",
+    FIGURE: "FIGURE",
+    HEAP: "HEAP"
+}
 
 class GameArea {
-    constructor() {
+    constructor(renderHandle) {
+
+        this.figure = new Figure();
+
         this.width = 15;
         this.heigth = 25;
+        this.figureHeight = 10;
+        this.figureLeft = 5;
 
+        this.renderHandle = renderHandle;
     }
+
+    get body() {
+        let b = [];
+        for(let i = 0; i < this.width; i++) {
+            let row = [];
+            for(let j = 0; j < this.heigth; j++) {
+                //if(this.figure)
+                row.push({
+                    TYPE: CELL_TYPE.EMPTY
+                });
+            }
+            b.push(row);
+        }
+    }
+
+    rotateLeft() {
+        this.figure.rotateToLeft();
+        console.log(this.figure.body);
+        this.renderHandle(this.figure.body);
+    }
+
+    rotateRight() {
+        this.figure.rotateToRight();
+        console.log(this.figure.body);
+        this.renderHandle(this.figure.body);
+    }
+
+    goDown() {
+        console.log('goDown');
+    }
+
 }
 
 
@@ -76,7 +116,9 @@ class Program {
     main() {
         console.clear();
 
-        let f = new Figure();
+        let gameArea = new GameArea();
+
+        /*let f = new Figure();
         f.rotateToRight();
         f.rotateToRight();
         f.rotateToRight();
@@ -84,7 +126,7 @@ class Program {
         f.rotateToLeft();
         f.rotateToLeft();
         f.rotateToLeft();
-        f.rotateToLeft();
+        f.rotateToLeft();*/
     }
 }
 
