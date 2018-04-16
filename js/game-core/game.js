@@ -85,32 +85,40 @@ class GameArea {
 
     get body() {
         let b = [];
+        console.log(this.width);
+        console.log(this.heigth);
+        console.log(this.figureHeight);
+        console.log(this.figureLeft);
+        console.log(this.figure);
         for(let i = 0; i < this.width; i++) {
             let row = [];
             for(let j = 0; j < this.heigth; j++) {
                 if(this.figure &&
-                    (this.figureHeight <= i ||
-                    this.figureHeight + this.figure.body.width > i) &&
-                    (this.figureLeft <= j ||
-                    this.figureLeft + this.figureHeight > j))
-                row.push({
-                    TYPE: CELL_TYPE.EMPTY
-                });
+                    (i >= this.figureHeight &&
+                    i < this.figureHeight + this.figure.body.width) &&
+                    (j >= this.figureLeft &&
+                    j < this.figureLeft + this.figureHeight)// &&
+                ) {
+                        row.push(1);
+                }
+                else {
+                    row.push(0);
+                }
             }
             b.push(row);
-        }
+        }return b;
     }
 
     rotateLeft() {
         this.figure.rotateToLeft();
         console.log(this.figure.body);
-        this.renderHandle(this.figure.body);
+        this.renderHandle(this.body);
     }
 
     rotateRight() {
         this.figure.rotateToRight();
         console.log(this.figure.body);
-        this.renderHandle(this.figure.body);
+        this.renderHandle(this.body);
     }
 
     goDown() {
