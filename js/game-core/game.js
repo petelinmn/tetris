@@ -31,7 +31,7 @@ const BODIES_BASE = {
 
 class Figure {
     constructor() {
-        this._shape = BODIES_BASE.LShapeRight;
+        this._shape = BODIES_BASE.UglyShape;
         this.body = this._shape;
     }
 
@@ -60,7 +60,11 @@ class Figure {
     }
 
     get width() {
-        return this.body
+        return this.body[0].length;
+    }
+
+    get height() {
+        return this.body.length;
     }
 }
 
@@ -90,23 +94,30 @@ class GameArea {
         console.log(this.figureHeight);
         console.log(this.figureLeft);
         console.log(this.figure);
-        for(let i = 0; i < this.width; i++) {
+        console.log(this.figure.width);
+        console.log(this.figure.height);
+        for(let j = 0; j < this.heigth; j++) {
             let row = [];
-            for(let j = 0; j < this.heigth; j++) {
+            for(let i = 0; i < this.width; i++) {
                 if(this.figure &&
-                    (i >= this.figureHeight &&
-                    i < this.figureHeight + this.figure.body.width) &&
-                    (j >= this.figureLeft &&
-                    j < this.figureLeft + this.figureHeight)// &&
+                    (j >= this.figureHeight &&
+                    j < this.figureHeight + this.figure.width) &&
+                    (i >= this.figureLeft &&
+                    i < this.figureLeft + this.figure.height) &&
+                    this.figure.body[j - this.figureHeight] &&
+                        this.figure.body[j - this.figureHeight][i - this.figureLeft]
                 ) {
                         row.push(1);
+                        console.log(i);
+                    console.log(j);
                 }
                 else {
                     row.push(0);
                 }
             }
             b.push(row);
-        }return b;
+        }
+        return b;
     }
 
     rotateLeft() {
