@@ -1,0 +1,9 @@
+#battlefield td {
+    width: 16px;
+    height: 16px;
+    background-color: lightgoldenrodyellow;
+}
+
+#battlefield td.figure {
+    background-color: cadetblue;
+}

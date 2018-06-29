@@ -7,21 +7,19 @@ let App = new Vue({
 
     template:
         `<div>
-            <div id="root">
-                <todo-item v-bind:msg="message"/>
-                <button v-on:click="go">GOOO</button>
-            </div>
-            <ol v-on:click="rotateRight">
-                <li>Item1</li>
-                <li>Item2</li>
-                <li>Item3</li>
-            </ol>
+            <table id="battlefield"><tbody>
+                <tr v-for="row in message">
+                    <td v-bind:class="{ figure: cell }" v-for="cell in row">
+                     {{cell}}
+                    </td>
+                </tr>
+            </tbody></table>
         </div>
         `,
     el: '#app',
     data: function () {
         return {
-            message: 'Привет Vue!'
+            message: 'Hello!'
         }
     },
     methods: {

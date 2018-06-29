@@ -18,20 +18,32 @@ const BODIES_BASE = {
         [0, 1],
     ],
     ZShapeRight: [
-        [0, 0, 1],
-        [0, 1, 1],
-        [0, 1, 0],
+        [0, 1],
+        [1, 1],
+        [1, 0],
     ],
     LShapeRight: [
         [0, 1],
         [0, 1],
-        [1, 1],
-    ],
+        [1, 1],    ],
 }
 
 class Figure {
     constructor() {
-        this._shape = BODIES_BASE.UglyShape;
+var q = 0;
+        while (true) {
+            for (var type in BODIES_BASE) {
+                console.log(BODIES_BASE[type]);
+                if(Math.random() > 0.9) {
+                    this._shape = BODIES_BASE[type]
+                }
+            }
+            console.log(this._shape);
+            this._shape = BODIES_BASE.ZShapeLeft;
+            if(this._shape)
+                break;
+        }
+
         this.body = this._shape;
     }
 
@@ -101,9 +113,9 @@ class GameArea {
             for(let i = 0; i < this.width; i++) {
                 if(this.figure &&
                     (j >= this.figureHeight &&
-                    j < this.figureHeight + this.figure.width) &&
+                    j <= this.figureHeight + this.figure.width) &&
                     (i >= this.figureLeft &&
-                    i < this.figureLeft + this.figure.height) &&
+                    i <= this.figureLeft + this.figure.height) &&
                     this.figure.body[j - this.figureHeight] &&
                         this.figure.body[j - this.figureHeight][i - this.figureLeft]
                 ) {
