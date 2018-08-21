@@ -7,39 +7,37 @@ const BODIES_BASE = {
         [0, 1, 0, 1, 0],
     ],
     IShape: [
-        [1],
-        [1],
-        [1],
-        [1],
+        [0, 1, 0, 0],
+        [0, 1, 0, 0],
+        [0, 1, 0, 0],
+        [0, 1, 0, 0],
     ],
     ZShapeLeft: [
-        [1, 0],
-        [1, 1],
-        [0, 1],
+        [1, 0, 0],
+        [1, 1, 0],
+        [0, 1, 0],
     ],
     ZShapeRight: [
-        [0, 1],
-        [1, 1],
-        [1, 0],
+        [0, 1, 0],
+        [1, 1, 0],
+        [1, 0, 0],
     ],
     LShapeRight: [
-        [0, 1],
-        [0, 1],
-        [1, 1],    ],
+        [0, 1, 0],
+        [0, 1, 0],
+        [1, 1, 0],
+    ],
 }
 
 class Figure {
     constructor() {
-var q = 0;
         while (true) {
             for (var type in BODIES_BASE) {
-                console.log(BODIES_BASE[type]);
                 if(Math.random() > 0.9) {
                     this._shape = BODIES_BASE[type]
                 }
             }
-            console.log(this._shape);
-            this._shape = BODIES_BASE.ZShapeLeft;
+
             if(this._shape)
                 break;
         }
@@ -56,6 +54,7 @@ var q = 0;
             }
             newBody.push(newRow);
         }
+
         this.body = newBody;
     }
 
@@ -68,6 +67,7 @@ var q = 0;
             }
             newBody.push(newRow);
         }
+
         this.body = newBody;
     }
 
@@ -92,36 +92,44 @@ class GameArea {
         this.figure = new Figure();
 
         this.width = 15;
-        this.heigth = 25;
-        this.figureHeight = 10;
-        this.figureLeft = 5;
+        this.height = 35;
+        this.figureHeight = 9;
+        this.figureLeft = 8;
+
+        this.gravityInterval = 500;
+
 
         this.renderHandle = renderHandle;
+
+        setInterval(this.gravityPowerCycle.bind(this), this.gravityInterval);
+    }
+
+    gravityPowerCycle() {
+
+
+
+        this.figureHeight++;
+        this.renderHandle(this.body);
+    }
+
+    touchGround() {
+
     }
 
     get body() {
         let b = [];
-        console.log(this.width);
-        console.log(this.heigth);
-        console.log(this.figureHeight);
-        console.log(this.figureLeft);
-        console.log(this.figure);
-        console.log(this.figure.width);
-        console.log(this.figure.height);
-        for(let j = 0; j < this.heigth; j++) {
+        for(let j = 0; j < this.height; j++) {
             let row = [];
             for(let i = 0; i < this.width; i++) {
                 if(this.figure &&
                     (j >= this.figureHeight &&
-                    j <= this.figureHeight + this.figure.width) &&
+                    j <= this.figureHeight + this.figure.height) &&
                     (i >= this.figureLeft &&
-                    i <= this.figureLeft + this.figure.height) &&
+                    i <= this.figureLeft + this.figure.width) &&
                     this.figure.body[j - this.figureHeight] &&
                         this.figure.body[j - this.figureHeight][i - this.figureLeft]
                 ) {
-                        row.push(1);
-                        console.log(i);
-                    console.log(j);
+                    row.push(1);
                 }
                 else {
                     row.push(0);
@@ -134,39 +142,28 @@ class GameArea {
 
     rotateLeft() {
         this.figure.rotateToLeft();
-        console.log(this.figure.body);
         this.renderHandle(this.body);
     }
 
     rotateRight() {
         this.figure.rotateToRight();
-        console.log(this.figure.body);
+        this.renderHandle(this.body);
+    }
+    moveLeft() {
+        this.figureLeft--;
+        this.renderHandle(this.body);
+    }
+    moveRight() {
+        this.figureLeft++;
+        this.renderHandle(this.body);
+    }
+    moveUp() {
+        this.figureHeight--;
+        this.renderHandle(this.body);
+    }
+    moveDown() {
+        this.figureHeight++;
         this.renderHandle(this.body);
     }
 
-    goDown() {
-        console.log('goDown');
-    }
-
 }
-
-
-class Program {
-    main() {
-        console.clear();
-
-        let gameArea = new GameArea();
-
-        /*let f = new Figure();
-        f.rotateToRight();
-        f.rotateToRight();
-        f.rotateToRight();
-        f.rotateToRight();
-        f.rotateToLeft();
-        f.rotateToLeft();
-        f.rotateToLeft();
-        f.rotateToLeft();*/
-    }
-}
-
-

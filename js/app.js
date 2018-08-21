@@ -23,12 +23,24 @@ let App = new Vue({
         }
     },
     methods: {
-        go: function () {
-            this.message = 'GOOOOOO!';
-        },
         render: function (gameData) {
-            console.log(gameData);
             this.message = gameData;
+        },
+        moveLeft: function () {
+            if(this.$game && this.$game.moveLeft)
+                this.$game.moveLeft();
+        },
+        moveRight: function () {
+            if(this.$game && this.$game.moveRight)
+                this.$game.moveRight();
+        },
+        moveUp: function () {
+            if(this.$game && this.$game.moveUp)
+                this.$game.moveUp();
+        },
+        moveDown: function () {
+            if(this.$game && this.$game.moveDown)
+                this.$game.moveDown();
         },
         rotateLeft: function () {
             if(this.$game && this.$game.rotateLeft)
@@ -37,10 +49,6 @@ let App = new Vue({
         rotateRight: function () {
             if(this.$game && this.$game.rotateRight)
                 this.$game.rotateRight();
-        },
-        goDown: function () {
-            if(this.$game && this.$game.rotateRight)
-                this.$game.goDown();
         }
     },
     beforeMount: function () {
@@ -48,21 +56,33 @@ let App = new Vue({
     }
 });
 
-window.document.body.onkeydown = function (e) {
+window.document.body.addEventListener('keydown', function (e) {
     if(e && e.key && App) {
         switch (e.key) {
-            case "ArrowLeft":
+            case "Insert":
                 if(App.rotateLeft)
                     App.rotateLeft();
                 break;
-            case "ArrowRight":
-                if(App.rotateRight)
+            case "Delete":
+                if(App.rotateRight())
                     App.rotateRight();
                 break;
+            case "ArrowUp":
+                if(App.moveUp)
+                    App.moveUp();
+                break;
             case "ArrowDown":
-                if(App.goDown)
-                    App.goDown();
+                if(App.moveDown())
+                    App.moveDown();
+                break;
+            case "ArrowLeft":
+                if(App.moveLeft)
+                    App.moveLeft();
+                break;
+            case "ArrowRight":
+                if(App.moveRight)
+                    App.moveRight();
                 break;
         }
     }
-};
+});
