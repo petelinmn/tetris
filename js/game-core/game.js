@@ -118,59 +118,59 @@ class GameArea {
         setInterval(this.gravityPowerCycle.bind(this), this.gravityInterval);
     }
 
-    get heap() {
-        if(!this._heap) {
-            this._heap = [];
-            for (let j = 0; j < this.height; j++) {
-                let row = [];
-                for (let i = 0; i < this.width; i++) {
-                    row.push(0);
-                }
-                this._heap.push(row);
-            }
-        }
-
-        return this._heap;
-    }
-
-    set heap(value) {
-        this._heap = value;
-    }
+    // get heap() {
+    //     if(!this._heap) {
+    //         this._heap = [];
+    //         for (let j = 0; j < this.height; j++) {
+    //             let row = [];
+    //             for (let i = 0; i < this.width; i++) {
+    //                 row.push(0);
+    //             }
+    //             this._heap.push(row);
+    //         }
+    //     }
+    //
+    //     return this._heap;
+    // }
+    //
+    // set heap(value) {
+    //     this._heap = value;
+    // }
 
     gravityPowerCycle() {
         this.figure.position.Y++;
         this.renderHandle(this.gameData);
 
-        if(this.canFigureTouchGround()) {
-            for(let j = 0; j < this.height; j++) {
-                let row = this.heap[j];
-                console.log(row);
-                for (let i = 0; i < this.width && row; i++) {
-                    if(row[i] && this.isFigureSquare(i, j)) {
-                        console.error('Фигура наложилась на кучу!');
-                    }
-
-                    row[i] = row[i] || this.isFigureSquare(i, j) ? 1 : 0
-                }
-            }
-
-            this.figure = new Figure(10, 0);
-        }
+        // if(this.canFigureTouchGround()) {
+        //     for(let j = 0; j < this.height; j++) {
+        //         let row = this.heap[j];
+        //         console.log(row);
+        //         for (let i = 0; i < this.width && row; i++) {
+        //             if(row[i] && this.isFigureSquare(i, j)) {
+        //                 console.error('Фигура наложилась на кучу!');
+        //             }
+        //
+        //             row[i] = row[i] || this.isFigureSquare(i, j) ? 1 : 0
+        //         }
+        //     }
+        //
+        //     this.figure = new Figure(10, 0);
+        // }
     }
 
     canFigureTouchGround() {
         if(this.figure.position.Y >= this.height - 1)
             return true;
 
-        for(let j = this.figure.height - 1; j >= 0; j--) {
-            for(let i = 0; i < this.figure.width; i++) {
-                if(this.figure.body[j][i]) {
-                    let row = this.heap[this.figure.position.Y - (this.figure.height - j) + 1];
-                    if(row && row.length && row[i + this.figure.position.X - 1])
-                        return true;
-                }
-            }
-        }
+        // for(let j = this.figure.height - 1; j >= 0; j--) {
+        //     for(let i = 0; i < this.figure.width; i++) {
+        //         if(this.figure.body[j][i]) {
+        //             let row = this.heap[this.figure.position.Y - (this.figure.height - j) + 1];
+        //             if(row && row.length && row[i + this.figure.position.X - 1])
+        //                 return true;
+        //         }
+        //     }
+        // }
     }
 
     isFigureSquare(i, j) {
@@ -199,7 +199,7 @@ class GameArea {
                     let t = 12;
                 }
 
-                row.push(this.heap[j] && this.heap[j][i] ? 2 : this.isFigureSquare(i, j) ? 1 : 0);
+                row.push(/*this.heap[j] && this.heap[j][i] ? 2 : */this.isFigureSquare(i, j) ? 1 : 0);
             }
             body.push(row);
         }
