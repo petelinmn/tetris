@@ -1,9 +1,0 @@
-class GameRenderer {
-    constructor() {
-
-    }
-
-    render(){
-
-    }
-}

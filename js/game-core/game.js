@@ -7,10 +7,10 @@ const BODIES_BASE = {
         [0, 1, 0, 1, 0],
     ],
     IShape: [
-        [0, 1, 0, 0],
-        [0, 1, 0, 0],
-        [0, 1, 0, 0],
-        [0, 1, 0, 0],
+        [0, 1, 0],
+        [0, 1, 0],
+        [0, 1, 0],
+        [0, 1, 0],
     ],
     ZShapeLeft: [
         [1, 0, 0],
@@ -27,22 +27,27 @@ const BODIES_BASE = {
         [0, 1, 0],
         [1, 1, 0],
     ],
+    TShapeRight: [
+        [0, 1, 0],
+        [1, 1, 1],
+        [0, 0, 0],
+    ]
 }
 
 class Figure {
-    constructor() {
-        while (true) {
-            for (var type in BODIES_BASE) {
-                if(Math.random() > 0.9) {
-                    this._shape = BODIES_BASE[type]
-                }
-            }
+    constructor(X = 10, Y = 10) {
+        let count = 0;
+        let selectedBody;
+        for (var prop in BODIES_BASE)
+            if (Math.random() < 1 / ++count)
+                selectedBody = prop;
 
-            if(this._shape)
-                break;
+        this.position = {
+            X: X,
+            Y: Y
         }
 
-        this.body = this._shape;
+        this.body = BODIES_BASE[selectedBody];
     }
 
     rotateToRight() {
@@ -76,94 +81,194 @@ class Figure {
     }
 
     get height() {
-        return this.body.length;
-    }
-}
 
-const CELL_TYPE = {
-    EMPTY: "EMPTY",
-    FIGURE: "FIGURE",
-    HEAP: "HEAP"
+        let zeroRowsCount = 0;
+        for(let j = 0; j < this.body.length; j++) {
+            let isZeroRow = true;
+            for (let i = 0; i < this.body[0].length && isZeroRow; i++) {
+                if(this.body[j][i])
+                    isZeroRow = false;
+            }
+
+            if(isZeroRow)
+                zeroRowsCount++;
+        }
+
+        return this.body.length - zeroRowsCount;
+    }
 }
 
 class GameArea {
     constructor(renderHandle) {
 
-        this.figure = new Figure();
-
         this.width = 15;
-        this.height = 35;
-        this.figureHeight = 9;
-        this.figureLeft = 8;
+        this.height = 9;
+
+        this.figure = new Figure(10, 0);
 
         this.gravityInterval = 500;
 
+        if(window && window.document && window.document.body)
+            window.document.body.addEventListener('keydown', this.onKeyDown.bind(this));
 
         this.renderHandle = renderHandle;
+
+        this.isFigureSquare = this.isFigureSquare.bind(this);
 
         setInterval(this.gravityPowerCycle.bind(this), this.gravityInterval);
     }
 
-    gravityPowerCycle() {
+    get heap() {
+        if(!this._heap) {
+            this._heap = [];
+            for (let j = 0; j < this.height; j++) {
+                let row = [];
+                for (let i = 0; i < this.width; i++) {
+                    row.push(0);
+                }
+                this._heap.push(row);
+            }
+        }
 
-
-
-        this.figureHeight++;
-        this.renderHandle(this.body);
+        return this._heap;
     }
 
-    touchGround() {
+    set heap(value) {
+        this._heap = value;
+    }
 
+    gravityPowerCycle() {
+        this.figure.position.Y++;
+        this.renderHandle(this.gameData);
+
+        if(this.canFigureTouchGround()) {
+            for(let j = 0; j < this.height; j++) {
+                let row = this.heap[j];
+                console.log(row);
+                for (let i = 0; i < this.width && row; i++) {
+                    if(row[i] && this.isFigureSquare(i, j)) {
+                        console.error('Фигура наложилась на кучу!');
+                    }
+
+                    row[i] = row[i] || this.isFigureSquare(i, j) ? 1 : 0
+                }
+            }
+
+            this.figure = new Figure(10, 0);
+        }
+    }
+
+    canFigureTouchGround() {
+        if(this.figure.position.Y >= this.height - 1)
+            return true;
+
+        for(let j = this.figure.height - 1; j >= 0; j--) {
+            for(let i = 0; i < this.figure.width; i++) {
+                if(this.figure.body[j][i]) {
+                    let row = this.heap[this.figure.position.Y - (this.figure.height - j) + 1];
+                    if(row && row.length && row[i + this.figure.position.X - 1])
+                        return true;
+                }
+            }
+        }
+    }
+
+    isFigureSquare(i, j) {
+        let vComparing =
+            j <= this.figure.position.Y &&
+            j >= this.figure.height - this.figure.position.Y;
+
+        let hComparing =
+            i >= this.figure.position.X &&
+            i <= this.figure.position.X + this.figure.width;
+
+        let figureComparing =
+            this.figure.body[this.figure.position.Y - j] &&
+            this.figure.body[this.figure.position.Y - j][i - this.figure.position.X];
+
+        return vComparing && hComparing && figureComparing;
     }
 
     get body() {
-        let b = [];
+        let body = [];
         for(let j = 0; j < this.height; j++) {
             let row = [];
             for(let i = 0; i < this.width; i++) {
-                if(this.figure &&
-                    (j >= this.figureHeight &&
-                    j <= this.figureHeight + this.figure.height) &&
-                    (i >= this.figureLeft &&
-                    i <= this.figureLeft + this.figure.width) &&
-                    this.figure.body[j - this.figureHeight] &&
-                        this.figure.body[j - this.figureHeight][i - this.figureLeft]
-                ) {
-                    row.push(1);
+
+                if(j == this.height - 1 && i > 5) {
+                    let t = 12;
                 }
-                else {
-                    row.push(0);
-                }
+
+                row.push(this.heap[j] && this.heap[j][i] ? 2 : this.isFigureSquare(i, j) ? 1 : 0);
             }
-            b.push(row);
+            body.push(row);
         }
-        return b;
+        return body;
+    }
+
+    get gameData() {
+        return {
+            body: this.body,
+            figure: this.figure
+        }
     }
 
     rotateLeft() {
         this.figure.rotateToLeft();
-        this.renderHandle(this.body);
+        this.renderHandle(this.gameData);
     }
 
     rotateRight() {
         this.figure.rotateToRight();
-        this.renderHandle(this.body);
+        this.renderHandle(this.gameData);
     }
     moveLeft() {
-        this.figureLeft--;
-        this.renderHandle(this.body);
+        this.figure.position.X--;
+        this.renderHandle(this.gameData);
     }
     moveRight() {
-        this.figureLeft++;
-        this.renderHandle(this.body);
+        this.figure.position.X++;
+        this.renderHandle(this.gameData);
     }
     moveUp() {
-        this.figureHeight--;
-        this.renderHandle(this.body);
+        this.figure.position.Y--;
+        this.renderHandle(this.gameData);
     }
     moveDown() {
-        this.figureHeight++;
-        this.renderHandle(this.body);
+        this.figure.position.Y++;
+        this.renderHandle(this.gameData);
     }
 
+    onKeyDown(e) {
+        if(e && e.key && this) {
+            switch (e.key) {
+                case "Insert":
+                    if(this.rotateLeft)
+                        this.rotateLeft();
+                    break;
+                case "Delete":
+                    if(this.rotateRight())
+                        this.rotateRight();
+                    break;
+                case "ArrowUp":
+                    if(this.moveUp)
+                        this.moveUp();
+                    break;
+                case "ArrowDown":
+                    if(this.moveDown())
+                        this.moveDown();
+                    break;
+                case "ArrowLeft":
+                    if(this.moveLeft)
+                        this.moveLeft();
+                    break;
+                case "ArrowRight":
+                    if(this.moveRight)
+                        this.moveRight();
+                    break;
+            }
+        }
+    }
 }
+
+
