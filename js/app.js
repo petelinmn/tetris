@@ -4,8 +4,8 @@ let App = new Vue({
             <table id="battlefield">
                 <tbody>
                     <tr v-for="row in gameData.body">
-                        <td v-bind:class="{ figure: cell == 1, heap: cell == 2 }" v-for="cell in row">
-                         {{cell}}
+                        <td v-bind:class="{ figure: cell.val == 1, heap: cell.val == 2 }" v-for="cell in row">
+                         {{ cell.i + ',' + cell.j }}
                         </td>
                     </tr>
                 </tbody>

@@ -104,7 +104,7 @@ class GameArea {
         this.width = 15;
         this.height = 9;
 
-        this.figure = new Figure(10, 0);
+        this.figure = new Figure(10, this.height);
 
         this.gravityInterval = 500;
 
@@ -115,7 +115,7 @@ class GameArea {
 
         this.isFigureSquare = this.isFigureSquare.bind(this);
 
-        setInterval(this.gravityPowerCycle.bind(this), this.gravityInterval);
+        //setInterval(this.gravityPowerCycle.bind(this), this.gravityInterval);
     }
 
     // get heap() {
@@ -138,7 +138,7 @@ class GameArea {
     // }
 
     gravityPowerCycle() {
-        this.figure.position.Y++;
+        this.figure.position.Y--;
         this.renderHandle(this.gameData);
 
         // if(this.canFigureTouchGround()) {
@@ -159,7 +159,7 @@ class GameArea {
     }
 
     canFigureTouchGround() {
-        if(this.figure.position.Y >= this.height - 1)
+        if(this.figure.position.Y == 0)
             return true;
 
         // for(let j = this.figure.height - 1; j >= 0; j--) {
@@ -174,24 +174,24 @@ class GameArea {
     }
 
     isFigureSquare(i, j) {
-        let vComparing =
-            j <= this.figure.position.Y &&
-            j >= this.figure.height - this.figure.position.Y;
-
-        let hComparing =
-            i >= this.figure.position.X &&
-            i <= this.figure.position.X + this.figure.width;
+        // let vComparing =
+        //     j <= this.figure.position.Y &&
+        //     j >= this.figure.height - this.figure.position.Y;
+        //
+        // let hComparing =
+        //     i >= this.figure.position.X &&
+        //     i <= this.figure.position.X + this.figure.width;
 
         let figureComparing =
-            this.figure.body[this.figure.position.Y - j] &&
-            this.figure.body[this.figure.position.Y - j][i - this.figure.position.X];
+            this.figure.body[this.figure.position.Y - j + 2] &&
+            this.figure.body[this.figure.position.Y - j + 2][i - this.figure.position.X];
 
-        return vComparing && hComparing && figureComparing;
+        return /*vComparing && hComparing &&*/ figureComparing;
     }
 
     get body() {
         let body = [];
-        for(let j = 0; j < this.height; j++) {
+        for(let j = this.height - 1; j >= 0; j--) {
             let row = [];
             for(let i = 0; i < this.width; i++) {
 
@@ -199,7 +199,12 @@ class GameArea {
                     let t = 12;
                 }
 
-                row.push(/*this.heap[j] && this.heap[j][i] ? 2 : */this.isFigureSquare(i, j) ? 1 : 0);
+                row.push({
+                    val: /*this.heap[j] && this.heap[j][i] ? 2 : */this.isFigureSquare(i, j) ? 1 : 0,
+                    i: i,
+                    j: j
+                    }
+                );
             }
             body.push(row);
         }
@@ -231,11 +236,11 @@ class GameArea {
         this.renderHandle(this.gameData);
     }
     moveUp() {
-        this.figure.position.Y--;
+        this.figure.position.Y++;
         this.renderHandle(this.gameData);
     }
     moveDown() {
-        this.figure.position.Y++;
+        this.figure.position.Y--;
         this.renderHandle(this.gameData);
     }
 
