@@ -74,6 +74,22 @@ class GameArea {
         // }
     }
 
+    isLeftEdge(i, j) {
+        let deltaY = this.figure.position.Y - j;
+        let deltaX = i - this.figure.position.X;
+
+
+        return deltaX == 0 && deltaY >= 0 && deltaY < 5;
+    }
+
+    isRightEdge(i, j) {
+        let deltaY = this.figure.position.Y - j;
+        let deltaX = i - this.figure.position.X;
+
+
+        return deltaX == 4 && deltaY >= 0 && deltaY < 5;
+    }
+
     isFigureSquare(i, j) {
         // let vComparing =
         //     j <= this.figure.position.Y &&
@@ -83,9 +99,10 @@ class GameArea {
         //     i >= this.figure.position.X &&
         //     i <= this.figure.position.X + this.figure.width;
 
+
         let figureComparing =
-            this.figure.body[this.figure.position.Y - j + 2] &&
-            this.figure.body[this.figure.position.Y - j + 2][i - this.figure.position.X];
+            this.figure.body[this.figure.position.Y - j ] &&
+            this.figure.body[this.figure.position.Y - j][i - this.figure.position.X];
 
         return /*vComparing && hComparing &&*/ figureComparing;
     }
@@ -103,7 +120,9 @@ class GameArea {
                 row.push({
                     val: /*this.heap[j] && this.heap[j][i] ? 2 : */this.isFigureSquare(i, j) ? 1 : 0,
                     i: i,
-                    j: j
+                    j: j,
+                    leftEdge: this.isLeftEdge(i, j),
+                    rightEdge: this.isRightEdge(i, j)
                     }
                 );
             }

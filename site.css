@@ -16,3 +16,11 @@ html, body {
     background-color: black;
     color: gray;
 }
+
+.leftEdge {
+    border-left: 1px solid mediumvioletred;
+}
+
+.rightEdge {
+    border-right: 1px solid mediumvioletred;
+}
