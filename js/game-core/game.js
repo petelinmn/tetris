@@ -74,37 +74,29 @@ class GameArea {
         // }
     }
 
-    isLeftEdge(i, j) {
-        let deltaY = this.figure.position.Y - j;
-        let deltaX = i - this.figure.position.X;
-
-
-        return deltaX == 0 && deltaY >= 0 && deltaY < 5;
+    isLeftEdge(x, y) {
+        return this._getDeltaX(x) == 0 && this._getDeltaY(y) >= 0 && this._getDeltaY(y) <= 4;
     }
 
-    isRightEdge(i, j) {
-        let deltaY = this.figure.position.Y - j;
-        let deltaX = i - this.figure.position.X;
-
-
-        return deltaX == 4 && deltaY >= 0 && deltaY < 5;
+    isRightEdge(x, y) {
+        return this._getDeltaX(x) == 4 && this._getDeltaY(y) >= 0 && this._getDeltaY(y) <= 4;
     }
 
-    isFigureSquare(i, j) {
-        // let vComparing =
-        //     j <= this.figure.position.Y &&
-        //     j >= this.figure.height - this.figure.position.Y;
-        //
-        // let hComparing =
-        //     i >= this.figure.position.X &&
-        //     i <= this.figure.position.X + this.figure.width;
+    isBottomEdge(x, y) {
+        return this._getDeltaX(x) >= 0 && this._getDeltaX(x) <= 4 && this._getDeltaY(y) == 4;
+    }
 
+    _getDeltaX(x) {
+        return x - this.figure.position.X;
+    }
 
-        let figureComparing =
-            this.figure.body[this.figure.position.Y - j ] &&
-            this.figure.body[this.figure.position.Y - j][i - this.figure.position.X];
+    _getDeltaY(y) {
+        return this.figure.position.Y - y + 4;
+    }
 
-        return /*vComparing && hComparing &&*/ figureComparing;
+    isFigureSquare(x, y) {
+        return this.figure.body[this._getDeltaY(y)] &&
+                this.figure.body[this._getDeltaY(y)][this._getDeltaX(x)];
     }
 
     get body() {
@@ -122,7 +114,8 @@ class GameArea {
                     i: i,
                     j: j,
                     leftEdge: this.isLeftEdge(i, j),
-                    rightEdge: this.isRightEdge(i, j)
+                    rightEdge: this.isRightEdge(i, j),
+                    bottomEdge: this.isBottomEdge(i, j)
                     }
                 );
             }
