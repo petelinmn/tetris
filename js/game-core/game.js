@@ -19,29 +19,27 @@ class GameArea {
         //setInterval(this.gravityPowerCycle.bind(this), this.gravityInterval);
     }
 
-    // get heap() {
-    //     if(!this._heap) {
-    //         this._heap = [];
-    //         for (let j = 0; j < this.height; j++) {
-    //             let row = [];
-    //             for (let i = 0; i < this.width; i++) {
-    //                 row.push(0);
-    //             }
-    //             this._heap.push(row);
-    //         }
-    //     }
-    //
-    //     return this._heap;
-    // }
-    //
-    // set heap(value) {
-    //     this._heap = value;
-    // }
+    get heap() {
+        if(this._heap)
+            return this._heap;
+
+        this._heap = [];
+        for (let j = 0; j < this.height; j++) {
+            let row = [];
+            for (let i = 0; i < this.width; i++) {
+                row.push(0);
+            }
+            this._heap.push(row);
+        }
+
+        return this._heap;
+    }
+
+    set heap(value) {
+        this._heap = value;
+    }
 
     gravityPowerCycle() {
-        this.figure.position.Y--;
-        this.renderHandle(this.gameData);
-
         // if(this.canFigureTouchGround()) {
         //     for(let j = 0; j < this.height; j++) {
         //         let row = this.heap[j];
@@ -57,10 +55,17 @@ class GameArea {
         //
         //     this.figure = new Figure(10, 0);
         // }
+
+        if(this.canFigureTouchGround()) {
+            alert('!!!')
+        }
+
+        this.figure.position.Y--;
+        this.renderHandle(this.gameData);
     }
 
     canFigureTouchGround() {
-        if(this.figure.position.Y == 0)
+        if(this.figure.position.Y + this.figure.deltaBottom == 0)
             return true;
 
         // for(let j = this.figure.height - 1; j >= 0; j--) {
@@ -72,6 +77,14 @@ class GameArea {
         //         }
         //     }
         // }
+    }
+
+    canFigureTouchLeftWall() {
+        return this.figure.position.X + this.figure.deltaLeft - 1 < 0;
+    }
+
+    canFigureTouchRightWall() {
+        return this.figure.position.X + 6 - this.figure.deltaRight > this.width;
     }
 
     isLeftEdge(x, y) {
@@ -131,20 +144,26 @@ class GameArea {
         }
     }
 
-    rotateLeft() {
-        this.figure.rotateToLeft();
+    rotateBack() {
+        this.figure.rotateBack();
         this.renderHandle(this.gameData);
     }
 
-    rotateRight() {
-        this.figure.rotateToRight();
+    rotate() {
+        this.figure.rotate();
         this.renderHandle(this.gameData);
     }
     moveLeft() {
+        if(this.canFigureTouchLeftWall())
+            return;
+
         this.figure.position.X--;
         this.renderHandle(this.gameData);
     }
     moveRight() {
+        if(this.canFigureTouchRightWall())
+            return;
+
         this.figure.position.X++;
         this.renderHandle(this.gameData);
     }
@@ -161,28 +180,22 @@ class GameArea {
         if(e && e.key && this) {
             switch (e.key) {
                 case "Insert":
-                    if(this.rotateLeft)
-                        this.rotateLeft();
+                    this.rotateBack();
                     break;
                 case "Delete":
-                    if(this.rotateRight())
-                        this.rotateRight();
+                    this.rotate();
                     break;
                 case "ArrowUp":
-                    if(this.moveUp)
-                        this.moveUp();
+                    this.moveUp();
                     break;
                 case "ArrowDown":
-                    if(this.moveDown())
-                        this.moveDown();
+                    this.moveDown();
                     break;
                 case "ArrowLeft":
-                    if(this.moveLeft)
-                        this.moveLeft();
+                    this.moveLeft();
                     break;
                 case "ArrowRight":
-                    if(this.moveRight)
-                        this.moveRight();
+                    this.moveRight();
                     break;
             }
         }
